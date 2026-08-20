@@ -32,13 +32,17 @@ const seedAdmin = async () => {
     else storage.createUser(user);
 };
 
-const start = async () => {
+const initialize = async () => {
     if (process.env.MONGO_URI) {
         try { await mongoose.connect(process.env.MONGO_URI); } catch (error) { console.warn('MongoDB unavailable; using in-memory storage.'); }
     }
     await seedAdmin();
-    app.listen(port, () => console.log(`Content Deck running at http://localhost:${port}`));
+};
+
+const start = async () => {
+    await initialize();
+    app.listen(port, '0.0.0.0', () => console.log(`Content Deck running at http://localhost:${port}`));
 };
 
 if (require.main === module) start();
-module.exports = { app, start };
+module.exports = { app, initialize, start };

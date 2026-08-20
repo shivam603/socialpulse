@@ -44,6 +44,30 @@ npm start
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
+## Deploy to Render
+
+This repository includes `render.yaml` for a Node web service.
+
+1. Open the Render dashboard and choose **New > Blueprint**.
+2. Connect the `shivam603/socialpulse` repository.
+3. Render will detect `render.yaml` and use `npm install` followed by `npm start`.
+4. Add values for `JWT_SECRET`, `MONGO_URI`, `ADMIN_EMAIL`, and `ADMIN_PASSWORD` when prompted.
+5. Deploy and verify the generated `/api/health` URL returns `{ "ok": true }`.
+
+Render is the recommended option when you need a continuously running Express server and MongoDB-backed persistence.
+
+## Deploy to Vercel
+
+This repository includes `vercel.json` and `api/index.js`. Vercel uses the exported Express app as a serverless function and serves `app.html` as the frontend.
+
+1. Import `https://github.com/shivam603/socialpulse` into Vercel.
+2. Keep the framework preset as **Other**.
+3. Add `JWT_SECRET`, `MONGO_URI`, `ADMIN_EMAIL`, and `ADMIN_PASSWORD` under **Project Settings > Environment Variables**.
+4. Deploy the project.
+5. Verify `/api/health` on the Vercel deployment URL.
+
+Vercel functions are stateless between invocations, so configure `MONGO_URI` for persistent users and posts. Do not rely on the in-memory fallback for a production Vercel deployment.
+
 ### Verify the project
 
 ```powershell
