@@ -17,7 +17,10 @@ app.use(express.static(__dirname));
 app.use('/api/auth', authRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/admin', adminRoutes);
-app.get('/api/health', (req, res) => res.json({ ok: true }));
+app.get('/api/health', (req, res) => res.json({
+    ok: true,
+    database: mongoose.connection.readyState === 1 ? 'mongodb' : 'memory',
+}));
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'app.html')));
 
 const seedAdmin = async () => {
@@ -34,7 +37,12 @@ const seedAdmin = async () => {
 
 const initialize = async () => {
     if (process.env.MONGO_URI) {
-        try { await mongoose.connect(process.env.MONGO_URI); } catch (error) { console.warn('MongoDB unavailable; using in-memory storage.'); }
+        try {
+            await mongoose.connect(process.env.MONGO_URI, {
+                dbName: process.env.MONGO_DB_NAME || undefined,
+                serverSelectionTimeoutMS: 10000,
+            });
+        } catch (error) { console.warn('MongoDB unavailable; using in-memory storage.'); }
     }
     await seedAdmin();
 };

@@ -51,7 +51,7 @@ This repository includes `render.yaml` for a Node web service.
 1. Open the Render dashboard and choose **New > Blueprint**.
 2. Connect the `shivam603/socialpulse` repository.
 3. Render will detect `render.yaml` and use `npm install` followed by `npm start`.
-4. Add values for `JWT_SECRET`, `MONGO_URI`, `ADMIN_EMAIL`, and `ADMIN_PASSWORD` when prompted.
+4. Add values for `JWT_SECRET`, `MONGO_URI`, `MONGO_DB_NAME`, `ADMIN_EMAIL`, and `ADMIN_PASSWORD` when prompted.
 5. Deploy and verify the generated `/api/health` URL returns `{ "ok": true }`.
 
 Render is the recommended option when you need a continuously running Express server and MongoDB-backed persistence.
@@ -62,7 +62,7 @@ This repository includes `vercel.json` and `api/index.js`. Vercel uses the expor
 
 1. Import `https://github.com/shivam603/socialpulse` into Vercel.
 2. Keep the framework preset as **Other**.
-3. Add `JWT_SECRET`, `MONGO_URI`, `ADMIN_EMAIL`, and `ADMIN_PASSWORD` under **Project Settings > Environment Variables**.
+3. Add `JWT_SECRET`, `MONGO_URI`, `MONGO_DB_NAME`, `ADMIN_EMAIL`, and `ADMIN_PASSWORD` under **Project Settings > Environment Variables**.
 4. Deploy the project.
 5. Verify `/api/health` on the Vercel deployment URL.
 
@@ -91,6 +91,7 @@ Set private values before deploying. Never commit `.env` or production credentia
 | `PORT` | HTTP server port | `3000` |
 | `JWT_SECRET` | Secret used to sign authentication tokens | Development fallback only |
 | `MONGO_URI` | MongoDB connection string | In-memory storage |
+| `MONGO_DB_NAME` | MongoDB database name | MongoDB driver's default |
 | `ADMIN_EMAIL` | Seed administrator email | Development fallback only |
 | `ADMIN_PASSWORD` | Seed administrator password | Development fallback only |
 
