@@ -1,0 +1,1020 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Content Deck | Post Composer</title>
+    <style>
+        :root {
+            --ink: #17212b;
+            --muted: #64717a;
+            --paper: #f5f7f6;
+            --panel: #ffffff;
+            --line: #dfe7e4;
+            --teal: #117a72;
+            --teal-dark: #0b554f;
+            --coral: #d9674b;
+            --gold: #b67a18;
+            font-family: Arial, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            color: var(--ink);
+            background: radial-gradient(circle at 8% 2%, #fff8df 0, transparent 24rem), linear-gradient(135deg, #f5f7f6 0%, #e4efec 100%);
+            min-height: 100vh;
+        }
+
+        header {
+            max-width: 1240px;
+            margin: auto;
+            padding: 38px 28px 24px;
+            border-bottom: 1px solid rgba(223, 231, 228, .9);
+            display: flex;
+            justify-content: space-between;
+            gap: 24px;
+            align-items: end;
+        }
+
+        .brand {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: clamp(2.2rem, 4vw, 3.25rem);
+            line-height: .95;
+            letter-spacing: -.04em;
+        }
+
+        .kicker {
+            color: var(--coral);
+            font: 700 .76rem/1.2 Arial, sans-serif;
+            text-transform: uppercase;
+            letter-spacing: .14em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            margin: 10px 0 0;
+            color: var(--muted);
+            font: 15px/1.55 Arial, sans-serif;
+            max-width: 530px;
+        }
+
+        .author-card {
+            margin-top: 16px;
+            color: var(--muted);
+            font: 13px/1.5 Arial, sans-serif;
+        }
+
+        .author-card strong {
+            color: var(--ink);
+        }
+
+        .author-card a {
+            color: var(--teal-dark);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .author-card a:hover {
+            text-decoration: underline;
+        }
+
+        .userbar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font: 14px Arial, sans-serif;
+            color: var(--muted);
+        }
+
+        button {
+            border: 0;
+            cursor: pointer;
+            font: 700 14px Arial, sans-serif;
+            border-radius: 6px;
+            padding: 11px 16px;
+            transition: transform .15s ease, box-shadow .15s ease, background-color .15s ease;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 12px rgba(23, 33, 43, .12);
+        }
+
+        button:focus-visible,
+        input:focus-visible,
+        textarea:focus-visible,
+        select:focus-visible {
+            outline: 3px solid #f2c14e;
+            outline-offset: 2px;
+        }
+
+        .ghost {
+            color: var(--teal-dark);
+            background: #e4f1ee;
+        }
+
+        .primary {
+            color: white;
+            background: var(--teal);
+        }
+
+        .primary:hover {
+            background: var(--teal-dark);
+        }
+
+        .danger {
+            background: #ffe0d7;
+            color: #a33a25;
+        }
+
+        .small {
+            padding: 8px 10px;
+            font-size: 12px;
+        }
+
+        main {
+            max-width: 1240px;
+            margin: auto;
+            padding: 26px 28px 56px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 2px;
+            border-bottom: 1px solid var(--line);
+            margin-bottom: 26px;
+        }
+
+        .tab {
+            background: transparent;
+            color: var(--muted);
+            border-radius: 8px 8px 0 0;
+            padding: 13px 18px;
+        }
+
+        .tab.active {
+            color: var(--teal-dark);
+            background: var(--panel);
+            box-shadow: inset 0 -2px 0 var(--teal);
+        }
+
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+            animation: rise .35s ease both;
+        }
+
+        @keyframes rise {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.1fr) minmax(340px, .9fr);
+            gap: 24px;
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, .94);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 26px;
+            box-shadow: 0 12px 30px rgba(31, 48, 43, .055);
+        }
+
+        h2 {
+            margin: 5px 0 20px;
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 1.65rem;
+            letter-spacing: -.02em;
+        }
+
+        h3 {
+            margin: 0 0 8px;
+            font-size: 1.1rem;
+        }
+
+        .eyebrow {
+            color: var(--teal);
+            font: 700 11px Arial, sans-serif;
+            text-transform: uppercase;
+            letter-spacing: .12em;
+        }
+
+        label {
+            display: block;
+            margin: 16px 0 6px;
+            color: #34434b;
+            font: 700 13px Arial, sans-serif;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            border: 1px solid #d9d0c4;
+            border-radius: 6px;
+            padding: 12px 13px;
+            background: #fbfcfc;
+            color: var(--ink);
+            font: 14px Arial, sans-serif;
+            transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+        }
+
+        input:hover,
+        textarea:hover,
+        select:hover {
+            border-color: #a9c5be;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            border-color: var(--teal);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(17, 122, 114, .12);
+            outline: 0;
+        }
+
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .two {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .composer-intro {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 18px;
+            padding-bottom: 18px;
+            margin-bottom: 4px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .composer-intro p {
+            max-width: 360px;
+            margin: 0;
+            color: var(--muted);
+            font: 13px/1.5 Arial, sans-serif;
+        }
+
+        .field-hint {
+            margin: -2px 0 8px;
+            color: var(--muted);
+            font: 12px/1.4 Arial, sans-serif;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px;
+            margin-top: 20px;
+        }
+
+        .notice {
+            padding: 12px 14px;
+            border-radius: 6px;
+            background: #eef5f2;
+            color: var(--teal-dark);
+            font: 14px/1.4 Arial, sans-serif;
+            margin-bottom: 16px;
+        }
+
+        .notice.error {
+            background: #fff0eb;
+            color: #a33a25;
+        }
+
+        .post-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .post {
+            border: 1px solid var(--line);
+            border-left: 3px solid var(--teal);
+            padding: 17px;
+            background: #fff;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(31, 48, 43, .035);
+            transition: transform .18s ease, box-shadow .18s ease;
+        }
+
+        .post:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px rgba(31, 48, 43, .09);
+        }
+
+        .post.scheduled {
+            border-left-color: var(--gold);
+        }
+
+        .post p {
+            margin: 8px 0;
+            color: #42515a;
+            font: 14px/1.45 Arial, sans-serif;
+            white-space: pre-wrap;
+        }
+
+        .post-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .post-title {
+            margin: 1px 0 0;
+            font: 700 17px/1.25 Georgia, 'Times New Roman', serif;
+        }
+
+        .post-schedule {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--muted);
+            font: 12px/1.4 Arial, sans-serif;
+        }
+
+        .post-schedule strong {
+            color: var(--ink);
+        }
+
+        .meta {
+            color: var(--muted);
+            font: 12px/1.4 Arial, sans-serif;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 7px;
+            border-radius: 20px;
+            margin: 0 5px 5px 0;
+            background: #e8f2ef;
+            color: var(--teal-dark);
+            font: 700 11px Arial, sans-serif;
+            text-transform: uppercase;
+        }
+
+        .calendar-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .calendar-head button {
+            padding: 8px 12px;
+        }
+
+        .month {
+            font-size: 1.4rem;
+        }
+
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            border-top: 1px solid var(--line);
+            border-left: 1px solid var(--line);
+        }
+
+        .weekday,
+        .day {
+            min-height: 110px;
+            padding: 8px;
+            border-right: 1px solid var(--line);
+            border-bottom: 1px solid var(--line);
+            font: 12px Arial, sans-serif;
+        }
+
+        .weekday {
+            min-height: auto;
+            background: #e8f2ef;
+            color: var(--teal-dark);
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .day.muted {
+            background: #faf8f3;
+            color: #b5aaa0;
+        }
+
+        .day.today {
+            box-shadow: inset 0 3px var(--coral);
+        }
+
+        .day-number {
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .event {
+            display: block;
+            padding: 5px;
+            margin: 4px 0;
+            border-radius: 4px;
+            background: #fff4d8;
+            color: #765416;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat {
+            padding: 20px;
+            border: 1px solid var(--line);
+            background: #fff;
+            border-radius: 7px;
+        }
+
+        .stat strong {
+            display: block;
+            font-size: 2rem;
+            color: var(--teal-dark);
+        }
+
+        .stat span {
+            color: var(--muted);
+            font: 12px Arial, sans-serif;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font: 14px Arial, sans-serif;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 11px 8px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        th {
+            color: var(--muted);
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        .auth {
+            max-width: 430px;
+            margin: 54px auto;
+            box-shadow: 0 18px 45px rgba(31, 48, 43, .09);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width:760px) {
+            header {
+                display: block;
+                padding: 24px 18px 16px;
+            }
+
+            .userbar {
+                margin-top: 18px;
+                justify-content: space-between;
+            }
+
+            main {
+                padding: 0 18px 32px;
+            }
+
+            .grid,
+            .two {
+                grid-template-columns: 1fr;
+            }
+
+            .composer-intro {
+                display: block;
+            }
+
+            .composer-intro p {
+                margin-top: 10px;
+            }
+
+            .tabs {
+                overflow: auto;
+            }
+
+            .tab {
+                white-space: nowrap;
+                padding: 12px;
+            }
+
+            .calendar {
+                min-width: 650px;
+            }
+
+            .calendar-wrap {
+                overflow: auto;
+            }
+
+            .day {
+                min-height: 90px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        /* SocialPulse application shell */
+        body {
+            background: #f3f6f4;
+            color: #182a2a;
+        }
+
+        header {
+            max-width: none;
+            padding: 22px clamp(20px, 4vw, 62px);
+            background: #102b2a;
+            border: 0;
+            color: #f5f4ed;
+            align-items: center;
+        }
+
+        header>div:first-child {
+            display: grid;
+            grid-template-columns: auto auto;
+            column-gap: 18px;
+            align-items: center;
+        }
+
+        .kicker {
+            grid-column: 1 / -1;
+            color: #e9b56f;
+            margin: 0 0 7px;
+            font-size: 10px;
+            letter-spacing: .2em;
+        }
+
+        .brand {
+            color: #fffdf4;
+            font-size: clamp(1.7rem, 3vw, 2.45rem);
+            letter-spacing: -.055em;
+        }
+
+        .subtitle {
+            margin: 0;
+            max-width: 280px;
+            color: #a8c1bc;
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
+        .author-card {
+            display: none;
+        }
+
+        .author-card a,
+        .author-card strong {
+            color: inherit;
+        }
+
+        .userbar {
+            color: #d8e7e2;
+        }
+
+        .userbar #userLabel {
+            padding: 9px 12px;
+            border: 1px solid rgba(208, 232, 224, .2);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, .06);
+            font-size: 12px;
+        }
+
+        main {
+            max-width: 1380px;
+            padding: 28px clamp(20px, 4vw, 62px) 64px;
+        }
+
+        .tabs {
+            width: fit-content;
+            padding: 5px;
+            gap: 4px;
+            margin-bottom: 28px;
+            border: 1px solid #d8e3df;
+            border-radius: 11px;
+            background: #e8efec;
+        }
+
+        .tab {
+            min-width: 112px;
+            padding: 10px 16px;
+            border-radius: 7px;
+            color: #60716f;
+            font-size: 12px;
+        }
+
+        .tab.active {
+            color: #173d39;
+            background: #fffdf8;
+            box-shadow: 0 2px 8px rgba(20, 58, 52, .12);
+        }
+
+        .grid {
+            grid-template-columns: minmax(0, 1.05fr) minmax(360px, .95fr);
+            gap: 28px;
+        }
+
+        .panel {
+            border: 1px solid #dbe5e1;
+            border-radius: 13px;
+            padding: clamp(22px, 3vw, 32px);
+            background: #fffdf8;
+            box-shadow: 0 18px 45px rgba(24, 53, 49, .07);
+        }
+
+        h2 {
+            margin: 6px 0 24px;
+            color: #153d39;
+            font-size: 1.8rem;
+        }
+
+        .composer-intro {
+            padding-bottom: 22px;
+            border-bottom-color: #e5ece8;
+        }
+
+        .composer-intro p {
+            color: #71817d;
+        }
+
+        label {
+            margin-top: 19px;
+            color: #38534e;
+            font-size: 11px;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        input,
+        textarea,
+        select {
+            border-color: #d4e1dd;
+            border-radius: 8px;
+            background: #f8faf8;
+        }
+
+        textarea {
+            min-height: 176px;
+        }
+
+        .actions {
+            padding-top: 18px;
+            border-top: 1px solid #e5ece8;
+        }
+
+        .primary,
+        .ghost,
+        .danger {
+            border-radius: 7px;
+        }
+
+        .primary {
+            background: #d9674b;
+        }
+
+        .primary:hover {
+            background: #bd5038;
+        }
+
+        .ghost {
+            color: #155d55;
+            background: #e3f0eb;
+        }
+
+        .post-list {
+            gap: 14px;
+        }
+
+        .post {
+            position: relative;
+            border: 1px solid #dbe5e1;
+            border-left: 0;
+            border-radius: 10px;
+            padding: 18px 18px 16px 21px;
+            box-shadow: none;
+            overflow: hidden;
+        }
+
+        .post::before {
+            position: absolute;
+            inset: 0 auto 0 0;
+            width: 4px;
+            background: #1a8278;
+            content: '';
+        }
+
+        .post.scheduled::before {
+            background: #d89a34;
+        }
+
+        .post:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 13px 25px rgba(24, 53, 49, .09);
+        }
+
+        .post-title {
+            color: #173f3a;
+            font-size: 18px;
+        }
+
+        .post p {
+            color: #536560;
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        .badge {
+            padding: 5px 8px;
+            background: #e5f1ed;
+            color: #19655c;
+            font-size: 10px;
+            letter-spacing: .04em;
+        }
+
+        .post.scheduled .badge:first-child {
+            background: #fff0cb;
+            color: #8b5f15;
+        }
+
+        .post-schedule {
+            padding: 8px 10px;
+            border-radius: 6px;
+            background: #f4f7f5;
+        }
+
+        .calendar-head,
+        .calendar-wrap,
+        #adminView .panel {
+            border-radius: 10px;
+        }
+
+        .calendar-head {
+            padding-bottom: 17px;
+            border-bottom: 1px solid #e3ebe7;
+        }
+
+        .month {
+            color: #173f3a;
+            font-weight: 700;
+        }
+
+        .weekday {
+            background: #e4f0ec;
+            color: #28665e;
+            letter-spacing: .08em;
+        }
+
+        .day {
+            background: #fffefa;
+        }
+
+        .day.today {
+            box-shadow: inset 0 4px #d9674b;
+        }
+
+        .event {
+            background: #fff0cb;
+            color: #785817;
+        }
+
+        .stat {
+            border: 1px solid #dbe5e1;
+            border-radius: 10px;
+            background: #fffdf8;
+            box-shadow: 0 10px 25px rgba(24, 53, 49, .05);
+        }
+
+        .stat strong {
+            color: #155d55;
+        }
+
+        th {
+            color: #66807a;
+            letter-spacing: .08em;
+        }
+
+        .auth {
+            position: relative;
+            overflow: hidden;
+            max-width: 470px;
+            margin-top: 70px;
+            padding: 38px;
+        }
+
+        .auth::before {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, #d9674b 0 34%, #e9b56f 34% 67%, #1a8278 67%);
+            content: '';
+        }
+
+        @media (max-width: 760px) {
+            header>div:first-child {
+                display: block;
+            }
+
+            .subtitle {
+                margin-top: 9px;
+                max-width: 330px;
+            }
+
+            .tabs {
+                width: 100%;
+            }
+
+            .tab {
+                min-width: auto;
+                flex: 1;
+                padding: 10px 8px;
+            }
+
+            .auth {
+                margin-top: 30px;
+                padding: 26px 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div>
+            <div class="kicker">SOCIALPULSE · CONTENT WORKSPACE</div>
+            <div class="brand">SocialPulse</div>
+            <p class="subtitle">Compose, schedule, and govern every post from one calm workspace.</p>
+            <div class="author-card">
+                Created by <strong>Shivam Ray</strong> ·
+                <a href="mailto:shivamray603@gmail.com">shivamray603@gmail.com</a> ·
+                <a href="https://github.com/shivam603" target="_blank" rel="noopener noreferrer">shivam603 on GitHub</a>
+            </div>
+        </div>
+        <div id="userbar" class="userbar hidden"><span id="userLabel"></span><button id="logoutBtn" class="ghost">Sign
+                out</button></div>
+    </header>
+    <main>
+        <section id="authView" class="view active">
+            <div class="panel auth">
+                <div class="eyebrow">Secure workspace</div>
+                <h2 id="authTitle">Sign in to Content Deck</h2>
+                <div id="authNotice" class="notice hidden"></div>
+                <form id="authForm">
+                    <div id="usernameField" class="hidden"><label for="username">Username</label><input id="username"
+                            autocomplete="username"></div><label for="email">Email</label><input id="email" type="email"
+                        required autocomplete="email"><label for="password">Password</label><input id="password"
+                        type="password" required minlength="6" autocomplete="current-password"><button class="primary"
+                        style="margin-top:18px" type="submit" id="authSubmit">Sign in</button>
+                </form><button id="authSwitch" class="ghost" style="margin-top:12px">Create an account</button>
+                <p class="meta" style="margin-top:18px">Use your account to access the workspace. Administrators are
+                    configured through environment variables.</p>
+            </div>
+        </section>
+        <section id="appView" class="view">
+            <nav class="tabs"><button class="tab active" data-view="composerView">Composer</button><button class="tab"
+                    data-view="calendarView">Calendar</button><button id="adminTab" class="tab hidden"
+                    data-view="adminView">Admin panel</button></nav>
+            <div id="composerView" class="view active">
+                <div class="grid">
+                    <div class="panel">
+                        <div class="composer-intro">
+                            <div>
+                                <div class="eyebrow">Create a post</div>
+                                <h2 id="formHeading">New draft</h2>
+                            </div>
+                            <p>Shape the idea now. Add a date when it is ready to join your publishing calendar.</p>
+                        </div>
+                        <div id="statusNotice" class="notice hidden"></div>
+                        <form id="postForm"><label for="title">Title</label><input id="title" required
+                                placeholder="A clear working title">
+                            <div class="two">
+                                <div><label for="platform">Channel</label><select id="platform">
+                                        <option>Instagram</option>
+                                        <option>Facebook</option>
+                                        <option>Reddit</option>
+                                        <option>Quora</option>
+                                        <option>X</option>
+                                        <option>Other</option>
+                                    </select></div>
+                                <div><label for="scheduledAt">Schedule for</label><input id="scheduledAt"
+                                        type="datetime-local"></div>
+                            </div><label for="mediaUrl">Media URL</label>
+                            <div class="field-hint">Optional. Add the image or video source for this post.</div><input
+                                id="mediaUrl" type="url" placeholder="https://example.com/image.jpg"><label
+                                for="content">Content</label><textarea id="content" required
+                                placeholder="Write the post content..."></textarea><label for="tags">Tags</label><input
+                                id="tags" placeholder="product, launch, story">
+                            <div class="actions"><button class="primary" type="submit" id="savePost">Save
+                                    draft</button><button class="ghost" type="button" id="clearPost">Clear</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="panel">
+                        <div class="eyebrow">Your workspace</div>
+                        <h2>Post board</h2>
+                        <div id="postList" class="post-list"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="calendarView" class="view">
+                <div class="panel">
+                    <div class="calendar-head"><button id="prevMonth" class="ghost"
+                            aria-label="Previous month">Previous</button>
+                        <div id="monthLabel" class="month"></div><button id="nextMonth" class="ghost"
+                            aria-label="Next month">Next</button>
+                    </div>
+                    <div class="calendar-wrap">
+                        <div id="calendar" class="calendar"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="adminView" class="view">
+                <div id="stats" class="stats"></div>
+                <div class="grid">
+                    <div class="panel">
+                        <div class="eyebrow">People</div>
+                        <h2>Users</h2>
+                        <div style="overflow:auto">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="userTable"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <div class="eyebrow">Moderation</div>
+                        <h2>All posts</h2>
+                        <div id="adminPosts" class="post-list"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script>
+        const apiBase = '/api'; let session = JSON.parse(localStorage.getItem('contentDeckSession') || 'null'); let editingId = null; let posts = []; let calendarDate = new Date();
+        const $ = (id) => document.getElementById(id); const esc = (value) => String(value || '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        const request = async (path, options = {}) => { const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) }; if (session?.token) headers.Authorization = `Bearer ${session.token}`; const response = await fetch(apiBase + path, { ...options, headers }); const data = await response.json().catch(() => ({})); if (!response.ok) throw new Error(data.message || 'Request failed.'); return data; };
+        const notice = (message, error = false) => { $('statusNotice').textContent = message; $('statusNotice').className = `notice${error ? ' error' : ''}`; };
+        const authNotice = (message) => { $('authNotice').textContent = message; $('authNotice').className = 'notice'; };
+        function renderPost(post) { const id = post._id || post.id; const date = post.scheduledAt ? new Date(post.scheduledAt).toLocaleString() : 'Not scheduled'; return `<article class="post ${post.status === 'scheduled' ? 'scheduled' : ''}"><div class="post-top"><div><span class="badge">${esc(post.status || 'draft')}</span><span class="badge">${esc(post.platform)}</span><h3 class="post-title">${esc(post.title)}</h3></div></div><div class="post-schedule"><span>Schedule</span><strong>${esc(date)}</strong></div><p>${esc(post.content)}</p><div>${(post.tags || []).map((tag) => `<span class="badge">#${esc(tag)}</span>`).join('')}</div><div class="actions"><button class="ghost small" data-edit="${id}">Edit</button><button class="danger small" data-delete="${id}">Delete</button></div></article>`; }
+        async function loadPosts() { posts = await request('/posts'); $('postList').innerHTML = posts.length ? posts.map(renderPost).join('') : '<div class="notice">No posts yet. Create your first draft.</div>'; renderCalendar(); }
+        function clearForm() { $('postForm').reset(); $('platform').value = 'Instagram'; editingId = null; $('formHeading').textContent = 'New draft'; $('savePost').textContent = 'Save draft'; $('statusNotice').className = 'notice hidden'; }
+        async function savePost(event) { event.preventDefault(); const payload = { title: $('title').value.trim(), platform: $('platform').value, scheduledAt: $('scheduledAt').value || null, mediaUrl: $('mediaUrl').value.trim(), content: $('content').value.trim(), tags: $('tags').value.split(',').map((tag) => tag.trim()).filter(Boolean) }; try { await request(editingId ? `/posts/${editingId}` : '/posts', { method: editingId ? 'PUT' : 'POST', body: JSON.stringify(payload) }); clearForm(); notice(editingId ? 'Post updated.' : 'Draft saved.'); await loadPosts(); } catch (error) { notice(error.message, true); } }
+        function editPost(id) { const post = posts.find((item) => (item._id || item.id) === id); if (!post) return; editingId = id; $('formHeading').textContent = 'Edit post'; $('savePost').textContent = 'Update post'; $('title').value = post.title; $('platform').value = post.platform; $('scheduledAt').value = post.scheduledAt ? new Date(post.scheduledAt).toISOString().slice(0, 16) : ''; $('mediaUrl').value = post.mediaUrl || ''; $('content').value = post.content || ''; $('tags').value = (post.tags || []).join(', '); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+        async function deletePost(id) { if (!confirm('Delete this post?')) return; try { await request(`/posts/${id}`, { method: 'DELETE' }); await loadPosts(); } catch (error) { notice(error.message, true); } }
+        function renderCalendar() { const year = calendarDate.getFullYear(), month = calendarDate.getMonth(); $('monthLabel').textContent = calendarDate.toLocaleDateString(undefined, { month: 'long', year: 'numeric' }); const first = new Date(year, month, 1).getDay(); const count = new Date(year, month + 1, 0).getDate(); const previous = new Date(year, month, 0).getDate(); let html = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => `<div class="weekday">${day}</div>`).join(''); for (let i = 0; i < 42; i++) { const dayNumber = i - first + 1; const inMonth = dayNumber > 0 && dayNumber <= count; const value = inMonth ? dayNumber : dayNumber <= 0 ? previous + dayNumber : dayNumber - count; const dateKey = inMonth ? new Date(year, month, dayNumber).toDateString() : ''; const today = dateKey === new Date().toDateString(); const events = posts.filter((post) => post.scheduledAt && new Date(post.scheduledAt).toDateString() === dateKey); html += `<div class="day ${inMonth ? '' : 'muted'} ${today ? 'today' : ''}"><div class="day-number">${value}</div>${events.map((post) => `<span class="event" title="${esc(post.title)}">${esc(post.title)}</span>`).join('')}</div>`; } $('calendar').innerHTML = html; }
+        async function loadAdmin() { const [summary, users, allPosts] = await Promise.all([request('/admin/summary'), request('/admin/users'), request('/admin/posts')]); $('stats').innerHTML = [['Users', summary.users], ['Posts', summary.posts], ['Scheduled', summary.scheduled]].map(([label, value]) => `<div class="stat"><strong>${value}</strong><span>${label}</span></div>`).join(''); $('userTable').innerHTML = users.map((user) => `<tr><td>${esc(user.username)}</td><td>${esc(user.email)}</td><td><span class="badge">${esc(user.role)}</span></td><td>${user.id !== session.user.id ? `<button class="ghost small" data-role="${user.id}" data-next-role="${user.role === 'admin' ? 'user' : 'admin'}">Make ${user.role === 'admin' ? 'user' : 'admin'}</button>` : 'Current user'}</td></tr>`).join(''); $('adminPosts').innerHTML = allPosts.length ? allPosts.map((post) => renderPost({ ...post, content: `Author: ${post.author}\n${post.content}` })).join('') : '<div class="notice">No posts in the workspace.</div>'; }
+        function showView(id) { document.querySelectorAll('#appView .view').forEach((view) => view.classList.toggle('active', view.id === id)); document.querySelectorAll('.tab').forEach((tab) => tab.classList.toggle('active', tab.dataset.view === id)); if (id === 'calendarView') renderCalendar(); if (id === 'adminView') loadAdmin().catch((error) => notice(error.message, true)); }
+        async function authenticate(event) { event.preventDefault(); const registering = !$('usernameField').classList.contains('hidden'); const body = { email: $('email').value.trim(), password: $('password').value }; if (registering) body.username = $('username').value.trim(); try { const result = await request(registering ? '/auth/register' : '/auth/login', { method: 'POST', body: JSON.stringify(body) }); session = result; localStorage.setItem('contentDeckSession', JSON.stringify(session)); boot(); } catch (error) { authNotice(error.message); } }
+        async function boot() { if (!session?.token) { $('authView').classList.add('active'); $('appView').classList.remove('active'); return; } $('authView').classList.remove('active'); $('appView').classList.add('active'); $('userbar').classList.remove('hidden'); $('userLabel').textContent = `${session.user.username} / ${session.user.role}`; $('adminTab').classList.toggle('hidden', session.user.role !== 'admin'); try { await loadPosts(); if (session.user.role === 'admin') await loadAdmin(); } catch (error) { localStorage.removeItem('contentDeckSession'); session = null; authNotice('Your session expired. Please sign in again.'); boot(); } }
+        $('authForm').addEventListener('submit', authenticate); $('postForm').addEventListener('submit', savePost); $('clearPost').onclick = clearForm; $('logoutBtn').onclick = () => { localStorage.removeItem('contentDeckSession'); session = null; location.reload(); }; $('authSwitch').onclick = () => { const registering = $('usernameField').classList.toggle('hidden'); $('authTitle').textContent = registering ? 'Create your workspace account' : 'Sign in to Content Deck'; $('authSubmit').textContent = registering ? 'Create account' : 'Sign in'; $('authSwitch').textContent = registering ? 'Back to sign in' : 'Create an account'; };
+        document.querySelectorAll('.tab').forEach((tab) => tab.onclick = () => showView(tab.dataset.view)); $('prevMonth').onclick = () => { calendarDate.setMonth(calendarDate.getMonth() - 1); renderCalendar(); }; $('nextMonth').onclick = () => { calendarDate.setMonth(calendarDate.getMonth() + 1); renderCalendar(); }; $('postList').onclick = (event) => { const edit = event.target.closest('[data-edit]'), remove = event.target.closest('[data-delete]'); if (edit) editPost(edit.dataset.edit); if (remove) deletePost(remove.dataset.delete); }; $('adminView').onclick = async (event) => { const roleButton = event.target.closest('[data-role]'), remove = event.target.closest('[data-delete]'); try { if (roleButton) { await request(`/admin/users/${roleButton.dataset.role}/role`, { method: 'PATCH', body: JSON.stringify({ role: roleButton.dataset.nextRole }) }); await loadAdmin(); } if (remove) { await request(`/admin/posts/${remove.dataset.delete}`, { method: 'DELETE' }); await loadAdmin(); await loadPosts(); } } catch (error) { notice(error.message, true); } }; boot();
+    </script>
+</body>
+
+</html>
