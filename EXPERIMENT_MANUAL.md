@@ -1,4 +1,4 @@
-# SocialPulse: Experiments 1.2.1 & 1.2.2 Comprehensive Lab Manual
+# SocialPulse Redux: Experiments 1.2.1 & 1.2.2 Comprehensive Lab Manual
 
 **Course:** Full Stack Development (Frontend State Architecture & Performance Optimization)  
 **Author:** Shivam Ray (`shivamray603@gmail.com` / `shivam603`)  

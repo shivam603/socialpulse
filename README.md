@@ -1,10 +1,10 @@
-# SocialPulse (Experiments 1.2.1 & 1.2.2)
+# SocialPulse Redux (Experiments 1.2.1 & 1.2.2)
 
 > A modern content composition, scheduling, and analytics workspace powered by **React**, **Redux Toolkit (RTK)**, and **Reselect** memoized state architecture.
 
 SocialPulse brings the daily publishing workflow into one centralized, high-performance web application. Create drafts with live platform character counters, schedule content across channels (Instagram, Facebook, X, Reddit, Quora, LinkedIn, YouTube), inspect normalized state collections, observe memoized selector caching, and manage workspace governance.
 
-[View the repository](https://github.com/shivam603/socialpulse) · [Report an issue](https://github.com/shivam603/socialpulse/issues)
+[View the repository](https://github.com/shivam603/socialpulse-redux) · [Report an issue](https://github.com/shivam603/socialpulse-redux/issues)
 
 ---
 

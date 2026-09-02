@@ -1,8 +1,8 @@
 {
-    "name": "socialpulse",
+    "name": "socialpulse-redux",
     "version": "1.0.0",
     "private": true,
-    "description": "A social content composition and scheduling workspace",
+    "description": "A centralized state management and scheduling workspace using Redux Toolkit and Reselect",
     "main": "server.js",
     "scripts": {
         "dev": "vite",

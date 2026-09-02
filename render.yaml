@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: socialpulse
+    name: socialpulse-redux
     runtime: node
     buildCommand: npm install && npm run build
     startCommand: npm start
@@ -13,7 +13,7 @@ services:
       - key: MONGO_URI
         sync: false
       - key: MONGO_DB_NAME
-        value: socialpulse
+        value: socialpulse_redux
       - key: ADMIN_EMAIL
         sync: false
       - key: ADMIN_PASSWORD
