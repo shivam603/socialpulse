@@ -1,144 +1,104 @@
-# SocialPulse
+# SocialPulse (Experiments 1.2.1 & 1.2.2)
 
-> A focused workspace for composing, scheduling, and governing social content.
+> A modern content composition, scheduling, and analytics workspace powered by **React**, **Redux Toolkit (RTK)**, and **Reselect** memoized state architecture.
 
-SocialPulse brings the daily publishing workflow into one place. Create a draft, attach a channel and publishing date, review the schedule on a calendar, and manage the workspace through a role-protected admin panel.
+SocialPulse brings the daily publishing workflow into one centralized, high-performance web application. Create drafts with live platform character counters, schedule content across channels (Instagram, Facebook, X, Reddit, Quora, LinkedIn, YouTube), inspect normalized state collections, observe memoized selector caching, and manage workspace governance.
 
 [View the repository](https://github.com/shivam603/socialpulse) · [Report an issue](https://github.com/shivam603/socialpulse/issues)
 
-## Product Highlights
+---
 
-| Workspace | What it does |
-| --- | --- |
-| Composer | Create, edit, tag, and delete posts across supported channels. |
-| Calendar | See scheduled content in a monthly publishing view. |
-| Admin panel | Review workspace activity, manage user roles, and moderate posts. |
-| Authentication | Register and sign in with expiring JWT sessions. |
+## 🎯 Combined Lab Experiments
 
-## Features
+- **Experiment 1.2.1 (Centralized State Management with Redux Toolkit):**
+  - Normalized state architecture via `createEntityAdapter` (`ids` array and `entities` dictionary for $O(1)$ lookups).
+  - Domain slices for `posts`, `platforms`, `drafts`, `filters`, `auth`, and `ui`.
+  - Async data operations with `createAsyncThunk`.
+- **Experiment 1.2.2 (Memoized Selectors & Render Optimization):**
+  - Reselect `createSelector` for derived filtered lists, platform aggregations, and calendar date mapping.
+  - Component optimization using `React.memo`, `useCallback`, and isolated slice subscriptions.
+  - Interactive **Redux State Inspector & Performance Profiler** displaying live normalized state trees, selector cache analytics, and component re-render counters.
 
-- Draft and schedule posts for Instagram, Facebook, Reddit, Quora, X, or another channel
-- Monthly calendar view for scheduled content
-- JWT authentication with bcrypt password hashing
-- Role-based access control for administrator routes
-- Admin summaries, user role management, and post moderation
-- MongoDB persistence with an in-memory fallback for local demos
-- Responsive interface for desktop and mobile screens
+---
 
-## Getting Started
+## 🚀 Product Highlights
+
+| Feature Area | Implementation Details |
+| :--- | :--- |
+| **Composer** | Connected to `draftsSlice` and `platformsSlice` with live character counters, media inputs, and snapshot restore history. |
+| **Post Board** | Memoized multi-criteria filtering (`selectFilteredPosts`) by keyword, platform, status (draft/scheduled), and sorting. |
+| **Publishing Calendar** | 42-day monthly calendar matrix generated via `selectCalendarEventsByMonth`. |
+| **Analytics & Metrics** | Derived summaries (`selectPostStats` & `selectGroupedPostsByPlatform`) for channel breakdown, scheduled ratios, and hashtag counts. |
+| **Redux State Inspector** | Live evaluation visualizer showing normalized store tree (`ids`/`entities`), dispatched action streams, and component render telemetry. |
+| **Admin Panel** | Workspace account governance and post moderation. |
+
+---
+
+## 📦 Getting Started
 
 ### Requirements
-
 - Node.js 18 or newer
 - npm
-- MongoDB, optional for local development
 
-### Install and run
+### Install and Run
 
 ```powershell
-git clone https://github.com/shivam603/socialpulse.git
-cd socialpulse
+# 1. Install dependencies
 npm install
+
+# 2. Build the React + Redux Toolkit bundle
+npm run build
+
+# 3. Start the Express server
 npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open **`http://localhost:3000`** in your browser.
 
-## Deploy to Render
+*(For active frontend development with hot-reload, run `npm run dev`)*
 
-This repository includes `render.yaml` for a Node web service.
+---
 
-1. Open the Render dashboard and choose **New > Blueprint**.
-2. Connect the `shivam603/socialpulse` repository.
-3. Render will detect `render.yaml` and use `npm install` followed by `npm start`.
-4. Add values for `JWT_SECRET`, `MONGO_URI`, `MONGO_DB_NAME`, `ADMIN_EMAIL`, and `ADMIN_PASSWORD` when prompted.
-5. Deploy and verify the generated `/api/health` URL returns `{ "ok": true }`.
-
-Render is the recommended option when you need a continuously running Express server and MongoDB-backed persistence.
-
-## Deploy to Vercel
-
-This repository includes `vercel.json` and `api/index.js`. Vercel uses the exported Express app as a serverless function and serves `app.html` as the frontend.
-
-1. Import `https://github.com/shivam603/socialpulse` into Vercel.
-2. Keep the framework preset as **Other**.
-3. Add `JWT_SECRET`, `MONGO_URI`, `MONGO_DB_NAME`, `ADMIN_EMAIL`, and `ADMIN_PASSWORD` under **Project Settings > Environment Variables**.
-4. Deploy the project.
-5. Verify `/api/health` on the Vercel deployment URL.
-
-Vercel functions are stateless between invocations, so configure `MONGO_URI` for persistent users and posts. Do not rely on the in-memory fallback for a production Vercel deployment.
-
-### Verify the project
-
-```powershell
-npm run check
-```
-
-The check script validates the Express entry point. Route modules and the embedded browser script can also be checked with Node's syntax checker during development.
-
-## Configuration
-
-Create a local `.env` file from the included template:
-
-```powershell
-Copy-Item .env.example .env
-```
-
-Set private values before deploying. Never commit `.env` or production credentials.
-
-| Variable | Description | Local fallback |
-| --- | --- | --- |
-| `PORT` | HTTP server port | `3000` |
-| `JWT_SECRET` | Secret used to sign authentication tokens | Development fallback only |
-| `MONGO_URI` | MongoDB connection string | In-memory storage |
-| `MONGO_DB_NAME` | MongoDB database name | MongoDB driver's default |
-| `ADMIN_EMAIL` | Seed administrator email | Development fallback only |
-| `ADMIN_PASSWORD` | Seed administrator password | Development fallback only |
-
-When `MONGO_URI` is not set, SocialPulse uses in-memory storage. This is convenient for a quick demo, but data is cleared when the server stops. Use MongoDB for persistent data.
-
-## API Surface
-
-All protected endpoints expect an `Authorization: Bearer <token>` header.
-
-| Method | Endpoint | Purpose |
-| --- | --- | --- |
-| `POST` | `/api/auth/register` | Create an account and receive a JWT. |
-| `POST` | `/api/auth/login` | Authenticate and receive a JWT. |
-| `GET`, `POST` | `/api/posts` | List or create the signed-in user's posts. |
-| `GET`, `PUT`, `DELETE` | `/api/posts/:id` | Read, update, or delete an owned post. |
-| `GET` | `/api/admin/summary` | View workspace counts as an administrator. |
-| `GET` | `/api/admin/users` | List users without password fields. |
-| `GET` | `/api/admin/posts` | Review all workspace posts. |
-| `PATCH` | `/api/admin/users/:id/role` | Change a user's role. |
-| `DELETE` | `/api/admin/posts/:id` | Moderate a post. |
-| `GET` | `/api/health` | Check server availability. |
-
-## Project Layout
+## 🏗️ State Architecture & Slices
 
 ```text
-app.html              SocialPulse web interface
-server.js             Express server and application entry point
-data/storage.js       In-memory development storage
-middleware/auth.js    JWT verification
-middleware/admin.js   Administrator role guard
-models/User.js        User schema
-models/Post.js        Post schema
-routes/auth.js        Registration and login
-routes/posts.js       Authenticated post operations
-routes/admin.js       Admin reporting and moderation
+src/
+├── store/
+│   ├── index.js                    # configureStore with action logger middleware
+│   ├── slices/
+│   │   ├── postsSlice.js           # createEntityAdapter normalized posts & async thunks
+│   │   ├── platformsSlice.js       # Social platform definitions & character limits
+│   │   ├── draftsSlice.js          # Unsaved draft buffer & snapshot caching
+│   │   ├── filtersSlice.js         # Search query, channel filters, status, sort
+│   │   ├── authSlice.js            # Authentication state & JWT thunks
+│   │   └── uiSlice.js              # View navigation, calendar date, profiler stats
+│   ├── selectors/
+│   │   └── postSelectors.js        # Reselect createSelector memoized derivations
+│   └── middleware/
+│       └── actionLoggerMiddleware.js # Intercepts and logs actions to inspector
+├── components/
+│   ├── Navbar.jsx                  # Header with user role, profiler toggle, view tabs
+│   ├── Composer.jsx                # Post composition with character limit enforcement
+│   ├── PostCard.jsx                # React.memo optimized individual card with render counter
+│   ├── PostList.jsx                # Filter toolbar and memoized post list
+│   ├── CalendarView.jsx            # Monthly calendar grid with scheduled posts
+│   ├── AnalyticsView.jsx           # Derived channel breakdown and top tags
+│   ├── StateInspector.jsx          # Live normalized state tree & re-render telemetry
+│   └── AdminPanel.jsx              # User role management and moderation
+├── App.jsx                         # Main layout controller
+├── main.jsx                        # Entrypoint with Redux Provider
+└── index.css                       # Modern SocialPulse styling
 ```
 
-## Security Notes
+---
 
-- Passwords are hashed with `bcryptjs` before storage.
-- JWTs expire after seven days.
-- User post queries are scoped to the authenticated user.
-- Admin routes require both a valid JWT and the `admin` role.
-- Use strong, private `JWT_SECRET` and `ADMIN_PASSWORD` values in deployed environments.
+## 📚 Experiment Manual
 
-## Author
+For detailed theory, state normalization diagrams, Reselect memoization graphs, and viva/exam question answers, see [EXPERIMENT_MANUAL.md](EXPERIMENT_MANUAL.md).
 
-**Shivam Ray**
+---
 
+## 👤 Author
+
+**Shivam Ray**  
 [GitHub](https://github.com/shivam603) · [Email](mailto:shivamray603@gmail.com)

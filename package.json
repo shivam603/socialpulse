@@ -5,14 +5,26 @@
     "description": "A social content composition and scheduling workspace",
     "main": "server.js",
     "scripts": {
+        "dev": "vite",
+        "build": "vite build",
         "start": "node server.js",
         "check": "node --check server.js"
     },
     "dependencies": {
+        "@reduxjs/toolkit": "^2.12.0",
         "bcryptjs": "^2.4.3",
+        "cors": "^2.8.6",
         "dotenv": "^16.4.5",
         "express": "^4.18.2",
         "jsonwebtoken": "^9.0.2",
-        "mongoose": "^8.0.0"
+        "lucide-react": "^1.39.0",
+        "mongoose": "^8.0.0",
+        "react": "^19.2.8",
+        "react-dom": "^19.2.8",
+        "react-redux": "^9.3.0"
+    },
+    "devDependencies": {
+        "@vitejs/plugin-react": "^6.1.1",
+        "vite": "^8.2.2"
     }
 }

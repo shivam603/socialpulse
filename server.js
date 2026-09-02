@@ -9,10 +9,17 @@ const authRoutes = require('./routes/auth');
 const postRoutes = require('./routes/posts');
 const adminRoutes = require('./routes/admin');
 
+const fs = require('fs');
+const cors = require('cors');
+
 const app = express();
 const port = process.env.PORT || 3000;
 
+app.use(cors());
 app.use(express.json({ limit: '1mb' }));
+if (fs.existsSync(path.join(__dirname, 'dist'))) {
+    app.use(express.static(path.join(__dirname, 'dist')));
+}
 app.use(express.static(__dirname));
 app.use('/api/auth', authRoutes);
 app.use('/api/posts', postRoutes);
@@ -20,8 +27,16 @@ app.use('/api/admin', adminRoutes);
 app.get('/api/health', (req, res) => res.json({
     ok: true,
     database: mongoose.connection.readyState === 1 ? 'mongodb' : 'memory',
+    reduxApp: fs.existsSync(path.join(__dirname, 'dist', 'index.html')),
 }));
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'app.html')));
+app.get('/', (req, res) => {
+    const distIndex = path.join(__dirname, 'dist', 'index.html');
+    if (fs.existsSync(distIndex)) {
+        return res.sendFile(distIndex);
+    }
+    res.sendFile(path.join(__dirname, 'app.html'));
+});
+app.get('/legacy', (req, res) => res.sendFile(path.join(__dirname, 'app.html')));
 
 const seedAdmin = async () => {
     const email = (process.env.ADMIN_EMAIL || 'admin@contentdeck.local').toLowerCase();
