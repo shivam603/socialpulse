@@ -25,7 +25,13 @@ export const loginUser = createAsyncThunk('auth/loginUser', async ({ email, pass
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
     });
-    const data = await response.json();
+    const text = await response.text();
+    let data = {};
+    try {
+      data = text ? JSON.parse(text) : {};
+    } catch {
+      return rejectWithValue(text.includes('<!DOCTYPE') ? 'Backend API endpoint returned HTML. Please check backend deployment.' : 'Server returned invalid response');
+    }
     if (!response.ok) {
       return rejectWithValue(data.message || 'Login failed.');
     }
@@ -43,7 +49,13 @@ export const registerUser = createAsyncThunk('auth/registerUser', async ({ usern
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, email, password }),
     });
-    const data = await response.json();
+    const text = await response.text();
+    let data = {};
+    try {
+      data = text ? JSON.parse(text) : {};
+    } catch {
+      return rejectWithValue(text.includes('<!DOCTYPE') ? 'Backend API endpoint returned HTML. Please check backend deployment.' : 'Server returned invalid response');
+    }
     if (!response.ok) {
       return rejectWithValue(data.message || 'Registration failed.');
     }

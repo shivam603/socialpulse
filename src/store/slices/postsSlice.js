@@ -18,6 +18,16 @@ const initialState = postsAdapter.getInitialState({
   syncTimestamp: null,
 });
 
+// Helper for safe JSON parsing
+const parseJsonResponse = async (response) => {
+  const text = await response.text();
+  try {
+    return text ? JSON.parse(text) : {};
+  } catch {
+    return { message: text.includes('<!DOCTYPE') ? 'Backend API returned HTML document.' : 'Invalid response from server' };
+  }
+};
+
 // Async Thunks for API Operations
 export const fetchPosts = createAsyncThunk('posts/fetchPosts', async (_, { getState, dispatch, rejectWithValue }) => {
   try {
@@ -27,7 +37,7 @@ export const fetchPosts = createAsyncThunk('posts/fetchPosts', async (_, { getSt
       headers['Authorization'] = `Bearer ${auth.token}`;
     }
     const response = await fetch(getApiUrl('/api/posts'), { headers });
-    const data = await response.json();
+    const data = await parseJsonResponse(response);
     if (response.status === 401) {
       dispatch(logout());
       return rejectWithValue('Session expired. Please sign in again.');
@@ -35,7 +45,7 @@ export const fetchPosts = createAsyncThunk('posts/fetchPosts', async (_, { getSt
     if (!response.ok) {
       return rejectWithValue(data.message || 'Failed to fetch posts');
     }
-    return data;
+    return Array.isArray(data) ? data : [];
   } catch (err) {
     return rejectWithValue(err.message || 'Network error while fetching posts');
   }
@@ -53,7 +63,7 @@ export const createPost = createAsyncThunk('posts/createPost', async (newPostDat
       headers,
       body: JSON.stringify(newPostData),
     });
-    const data = await response.json();
+    const data = await parseJsonResponse(response);
     if (!response.ok) {
       return rejectWithValue(data.message || 'Failed to create post');
     }
@@ -75,7 +85,7 @@ export const updatePost = createAsyncThunk('posts/updatePost', async ({ id, upda
       headers,
       body: JSON.stringify(updates),
     });
-    const data = await response.json();
+    const data = await parseJsonResponse(response);
     if (!response.ok) {
       return rejectWithValue(data.message || 'Failed to update post');
     }
@@ -96,7 +106,7 @@ export const deletePost = createAsyncThunk('posts/deletePost', async (id, { getS
       method: 'DELETE',
       headers,
     });
-    const data = await response.json();
+    const data = await parseJsonResponse(response);
     if (!response.ok) {
       return rejectWithValue(data.message || 'Failed to delete post');
     }
